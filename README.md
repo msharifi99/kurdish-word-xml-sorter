@@ -21,3 +21,7 @@ yarn install
 
 yarn build
 ```
+
+
+## Todo feature
+- [ ] Export file as DOC file instead of XML
