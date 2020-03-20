@@ -209,7 +209,7 @@ function getParagraphDescriptorList(paragraphs) {
 }
 
 function normalizeText(text) {
-  return text.split('ـ').join('');
+  return text.trim().split('ـ').join('');
 }
 
 function getTextFromParagraph(paragraphNode) {
