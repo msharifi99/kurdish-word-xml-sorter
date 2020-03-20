@@ -294,7 +294,7 @@ function downloadProcessedFile() {
     const fileUrl = URL.createObjectURL(file);
     const downloaderLink = document.createElement('a');
     downloaderLink.href = fileUrl
-    downloaderLink.download = state.process.value.name;
+    downloaderLink.download = state.upload.value.name;
     downloaderLink.click();
     state.download.value = file
   } catch (e) {
