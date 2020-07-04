@@ -1,5 +1,6 @@
 import { parse } from "node-html-parser"
 
+const OO_LETTER = "وو"
 const kurdishLettersOrder = {
   "ئ": 0,
   "ا": 1,
@@ -30,7 +31,7 @@ const kurdishLettersOrder = {
   "ن": 26,
   "و": 27,
   "ۆ": 28,
-  "وو": 29,
+  [OO_LETTER]: 29,
   "ه": 30,
   "ە": 31,
   "ی": 32,
@@ -72,7 +73,6 @@ const sourceState = {
 
 const state = createUpdateDOMProxy(sourceState)
 function updateDOM() {
-  console.log("hello")
   updateButtons();
   updateStepsStatus()
 }
@@ -220,29 +220,30 @@ function getTextFromParagraph(paragraphNode) {
 }
 
 function sortDescriptors(descriptors) {
-  descriptors.sort((a, b) => {
-    const { text: textA } = a;
+  descriptors.sort((b, a) => {
     const { text: textB } = b;
-    return compare(textA, textB);
+    const { text: textA } = a;
+    return compare(textB, textA);
   })
   return descriptors;
 
 }
 
-function compare(firstLine, secondLine) {
-  const firstLineIsShorter = firstLine.length < secondLine.length
-  const shorterLine = firstLineIsShorter ? firstLine : secondLine
+function compare(secondLine, firstLine) {
+  const transformedSecondLine = str2CharNumber(secondLine);
+  const transformedFirsLine = str2CharNumber(firstLine);
+  if (transformedFirsLine > transformedSecondLine) return -1;
+  else if (transformedFirsLine > transformedSecondLine) return 1;
+  else return 0
+}
 
-  for (const i in shorterLine) {
-    const o1 = kurdishLettersOrder[firstLine[i]];
-    const o2 = kurdishLettersOrder[secondLine[i]];
-    const notFound = o1 === undefined || o2 === undefined;
-    const sameLatter = firstLine[i] === secondLine[i]
-    if (notFound && !sameLatter) return firstLine[i] > secondLine[i] ? 1 : -1
-    if (o1 > o2) return 1;
-    else if (o1 < o2) return -1;
-  }
-  return firstLineIsShorter ? -1 : 1
+function str2CharNumber(str) {
+  let result = str;
+  result = result.replace(OO_LETTER, kurdishLettersOrder[OO_LETTER])
+  Object.keys(kurdishLettersOrder).forEach(char => {
+    result = result.replace(char, kurdishLettersOrder[char])
+  })
+  return result
 }
 
 function syncParagraphsWithDescriptors(paragraphs, descriptors) {
