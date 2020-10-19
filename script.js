@@ -232,18 +232,35 @@ function sortDescriptors(descriptors) {
 function compare(secondLine, firstLine) {
   const transformedSecondLine = str2CharNumber(secondLine);
   const transformedFirsLine = str2CharNumber(firstLine);
-  if (transformedFirsLine > transformedSecondLine) return -1;
-  else if (transformedFirsLine > transformedSecondLine) return 1;
-  else return 0
+    const isBothLineArray =
+        Array.isArray(transformedFirsLine) &&
+        Array.isArray(transformedSecondLine);
+    if (isBothLineArray)
+        return compareTwoArray(transformedFirsLine, transformedSecondLine);
+
+    if (firstLine > secondLine) return -1;
+    if (secondLine > firstLine) return 1;
+    return 0;
 }
 
 function str2CharNumber(str) {
   let result = str;
-  result = result.replace(OO_LETTER, kurdishLettersOrder[OO_LETTER])
-  Object.keys(kurdishLettersOrder).forEach(char => {
-    result = result.replace(char, kurdishLettersOrder[char])
-  })
-  return result
+    result = result.replaceAll(OO_LETTER, kurdishLettersOrder[OO_LETTER] + " ");
+    Object.keys(kurdishLettersOrder).forEach((char) => {
+        result = result.replaceAll(char, kurdishLettersOrder[char] + " ");
+    });
+    return result.split(" ").map((a) => Number(a));
+}
+
+function compareTwoArray(arr1, arr2) {
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] === arr2[i]) continue;
+        if (arr1[i] > arr2[i]) return -1;
+        if (arr2[i] > arr1[i]) return 1;
+    }
+    if (arr1.length > arr2.length) return -1;
+    if (arr2.length > arr1.length) return 1;
+    if (arr2.length === arr1.length) return 0;
 }
 
 function syncParagraphsWithDescriptors(paragraphs, descriptors) {
