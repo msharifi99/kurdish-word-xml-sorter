@@ -246,9 +246,16 @@ function str2CharNumber(str) {
   let result = str;
   result = result.replaceAll(OO_LETTER, kurdishLettersOrder[OO_LETTER] + ' ');
   Object.keys(kurdishLettersOrder).forEach((char) => {
-    result = result.replaceAll(char, kurdishLettersOrder[char] + ' ');
+    result = result.replaceAll(char, ' ' + kurdishLettersOrder[char] + ' ');
   });
-  return result.split(' ').map((a) => Number(a));
+  return result
+    .split(' ')
+    .filter((char) => char !== '')
+    .map((char) =>
+      Number.isNaN(Number(char))
+        ? char.split('').map((c) => c.charCodeAt(0))
+        : Number(char)
+    );
 }
 
 function compareTwoArray(arr1, arr2) {
